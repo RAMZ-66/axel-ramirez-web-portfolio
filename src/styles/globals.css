@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: dark; }
+html, body, #__next { height: 100%; }
+body { @apply bg-bg text-white font-sans antialiased; }
+.section { @apply max-w-6xl mx-auto px-6 md:px-8; }
+.card { @apply bg-surface rounded-xl shadow-soft border border-white/5; }
+.button-primary { @apply inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-accent text-black font-semibold hover:opacity-90 transition; }
+.link { @apply text-accent hover:underline; }
+/* Keep content visible until GSAP starts */
+.reveal,
+.portfolio-card {
+  opacity: 1 !important;
+  transform: none !important;
+}
