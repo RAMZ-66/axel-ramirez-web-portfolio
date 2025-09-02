@@ -12,7 +12,7 @@ import { useEffect, useState } from 'react'
 import { fadeUpStagger } from '../utils/gsapAnimations'
 
 export default function Home() {
-  const [recaptchaToken, setRecaptchaToken] = useState(null);
+  const [recaptchaExecute, setRecaptchaExecute] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
 
@@ -21,56 +21,66 @@ export default function Home() {
     fadeUpStagger('.portfolio-card')
   }, [])
 
-  const handleRecaptchaChange = (token) => {
-    setRecaptchaToken(token);
+  const handleRecaptchaChange = (executeFunction) => {
+    setRecaptchaExecute(() => executeFunction);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!recaptchaToken) {
-      setSubmitStatus({ type: 'error', message: 'Please complete the reCAPTCHA verification.' });
+    if (!recaptchaExecute) {
+      setSubmitStatus({ type: 'error', message: 'reCAPTCHA not ready. Please wait a moment and try again.' });
       return;
     }
 
     setIsSubmitting(true);
     setSubmitStatus(null);
 
-    const formData = new FormData(e.target);
-    const data = {
-      name: formData.get('name'),
-      email: formData.get('email'),
-      subject: formData.get('subject'),
-      message: formData.get('message'),
-      recaptchaToken: recaptchaToken
-    };
-
     try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
+      // Execute reCAPTCHA to get token
+      const recaptchaToken = await recaptchaExecute();
+      
+      if (!recaptchaToken) {
+        setSubmitStatus({ type: 'error', message: 'reCAPTCHA verification failed. Please try again.' });
+        setIsSubmitting(false);
+        return;
+      }
 
-      const result = await response.json();
+      const formData = new FormData(e.target);
+      const data = {
+        name: formData.get('name'),
+        email: formData.get('email'),
+        subject: formData.get('subject'),
+        message: formData.get('message'),
+        recaptchaToken: recaptchaToken
+      };
 
-      if (response.ok) {
-        setSubmitStatus({ type: 'success', message: 'Message sent successfully! I\'ll get back to you soon.' });
-        e.target.reset();
-        setRecaptchaToken(null);
-        // Reset reCAPTCHA
-        if (window.grecaptcha) {
-          window.grecaptcha.reset();
+          try {
+        const response = await fetch('/api/contact', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          setSubmitStatus({ type: 'success', message: 'Message sent successfully! I\'ll get back to you soon.' });
+          e.target.reset();
+        } else {
+          setSubmitStatus({ type: 'error', message: result.error || 'Failed to send message. Please try again.' });
         }
-      } else {
-        setSubmitStatus({ type: 'error', message: result.error || 'Failed to send message. Please try again.' });
+      } catch (error) {
+        console.error('Contact form error:', error);
+        setSubmitStatus({ type: 'error', message: 'An error occurred. Please try again.' });
+      } finally {
+        setIsSubmitting(false);
       }
     } catch (error) {
-      console.error('Contact form error:', error);
-      setSubmitStatus({ type: 'error', message: 'An error occurred. Please try again.' });
-    } finally {
+      console.error('reCAPTCHA execution error:', error);
+      setSubmitStatus({ type: 'error', message: 'reCAPTCHA verification failed. Please try again.' });
       setIsSubmitting(false);
     }
   };
@@ -257,7 +267,7 @@ export default function Home() {
             <button 
               className="button-primary md:col-span-2" 
               type="submit" 
-              disabled={isSubmitting || !recaptchaToken}
+              disabled={isSubmitting || !recaptchaExecute}
             >
               {isSubmitting ? 'Sending...' : 'Send message'}
             </button>
