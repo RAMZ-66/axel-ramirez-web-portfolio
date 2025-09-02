@@ -125,10 +125,10 @@ export default function Home() {
       <Header />
 
       {/* Hero */}
-      <section className="relative pt-96 md:pt-70 pb-80 section">
+      <section className="relative py-80 md:py-80 section">
         <ThreeHero />
         <div className="max-w-full mx-auto text-center reveal">
-          <h1 className="text-2xl md:text-8xl font-bold leading-tight mb-6">
+          <h1 className="text-3xl md:text-8xl font-bold leading-tight mb-6">
             Making Unforgettable Web Experiences
           </h1>
           <p className="text-muted mb-8">
@@ -156,7 +156,7 @@ export default function Home() {
       </section>
 
       {/* 3D Section */}
-      <section className="section py-20">
+      <section className="section py-10 md:py-20">
         <SectionHeading
           kicker="Playground"
           title="Interactive 3D"
