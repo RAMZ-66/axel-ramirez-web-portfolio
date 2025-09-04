@@ -8,7 +8,7 @@ import ThreeHero from '@/components/ThreeHero'
 import ThreeScene from '@/components/ThreeScene'
 import ReCaptcha from '@/components/ReCaptcha'
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { fadeUpStagger } from '../utils/gsapAnimations'
 
 export default function Home() {
@@ -21,9 +21,9 @@ export default function Home() {
     fadeUpStagger('.portfolio-card')
   }, [])
 
-  const handleRecaptchaChange = (executeFunction) => {
+  const handleRecaptchaChange = useCallback((executeFunction) => {
     setRecaptchaExecute(() => executeFunction);
-  };
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -55,7 +55,7 @@ export default function Home() {
         recaptchaToken: recaptchaToken
       };
 
-          try {
+      try {
         const response = await fetch('/api/contact', {
           method: 'POST',
           headers: {
@@ -87,13 +87,13 @@ export default function Home() {
 
   const projects = [
     {
-      title: 'Industrial Automation Company',
+      title: 'IntechMotion - Industrial Automation',
       img: '/images/intechmotion-logo.png',
       tags: ['SEO', 'UI/UX', 'Web architecture'],
       link: 'https://intechmotion.com/'
     },
     {
-      title: 'Industrial Automation Company',
+      title: 'Ripipsa - Industrial Automation',
       img: '/images/ripipsa-logo.png',
       tags: ['SEO', 'UI/UX', 'Web architecture','Dynamic content (User credentials based) ', 'CI/CD'],
       link: 'https://ripipsa.com/'
@@ -236,12 +236,13 @@ export default function Home() {
         <GoogleReCaptchaProvider
           reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
           scriptProps={{
-            async: false,
-            defer: false,
-            appendTo: 'head',
-            nonce: undefined,
+            async: true,
+            defer: true,
+            appendTo: 'body',
           }}
         >
+          {/* Debug: Check if environment variable is loaded */}
+          {console.log('reCAPTCHA Site Key:', process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY)}
           <form className="card p-6 grid md:grid-cols-2 gap-4 max-w-3xl reveal" onSubmit={handleSubmit}>
             <input className="bg-black/30 border border-white/10 rounded px-4 py-3 outline-none focus:border-accent" name="name" placeholder="Your name" required />
             <input className="bg-black/30 border border-white/10 rounded px-4 py-3 outline-none focus:border-accent" type="email" name="email" placeholder="Email address" required />
