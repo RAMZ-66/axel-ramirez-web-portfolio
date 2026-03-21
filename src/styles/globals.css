@@ -7,11 +7,50 @@ html, body, #__next { height: 100%; }
 body { @apply bg-bg text-white font-sans antialiased; }
 .section { @apply max-w-6xl mx-auto px-6 md:px-8; }
 .card { @apply bg-surface rounded-xl shadow-soft border border-white/5; }
-.button-primary { @apply inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-accent text-black font-semibold hover:opacity-90 transition; }
+.button-primary { @apply inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-accent text-neutral-100 font-semibold hover:opacity-90 transition; }
+.button-secondary { @apply inline-flex items-center gap-2 px-5 py-3 rounded-lg border border-white/10 hover:border-accent/50 hover:ring-0 hover:ring-accent/30 transition; }
 .link { @apply text-accent hover:underline; }
 /* Keep content visible until GSAP starts */
 .reveal,
 .portfolio-card {
   opacity: 1 !important;
   transform: none !important;
+}
+
+.text-outline {
+  -webkit-text-stroke: 2px white;
+  -webkit-text-fill-color: transparent;
+}
+.text-outline-mobile {
+  -webkit-text-stroke: .5px white;
+  -webkit-text-fill-color: transparent;
+}
+
+html{
+  scroll-behavior: smooth !important;
+}
+
+/* Gallery fade */
+.gallery-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  will-change: opacity;
+  transform: translateZ(0);
+}
+
+.gallery-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+body{
+  overflow-x: hidden !important;
+}
+
+/* Hide default cursor everywhere */
+*, *::before, *::after {
+  cursor: none !important;
 }

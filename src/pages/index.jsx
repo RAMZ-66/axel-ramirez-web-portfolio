@@ -5,20 +5,73 @@ import Footer from '@/components/Footer'
 import SectionHeading from '@/components/SectionHeading'
 import PortfolioCard from '@/components/PortfolioCard'
 import ThreeHero from '@/components/ThreeHero'
-import ThreeScene from '@/components/ThreeScene'
+import ThreeShowcase from '@/components/ThreeShowcase'
 import ReCaptcha from '@/components/ReCaptcha'
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3'
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { fadeUpStagger } from '../utils/gsapAnimations'
+import { useLang } from '@/context/LanguageContext'
 
 export default function Home() {
+  const { tr } = useLang()
   const [recaptchaExecute, setRecaptchaExecute] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
 
+  const galleryImages = [
+    { src: '/images/axel-1.webp',  alt: 'Axel front picture' },
+    { src: '/images/axel-2.webp', alt: 'Axel giving a talk' },
+    { src: '/images/axel-3.webp', alt: 'Axel Ramirez' },
+  ];
+  const [activeIdx, setActiveIdx] = useState(0);
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveIdx(prev => (prev + 1) % galleryImages.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const skillsSectionRef = useRef(null)
+  const skillsTrackRef = useRef(null)
+
   useEffect(() => {
     fadeUpStagger('.reveal')
     fadeUpStagger('.portfolio-card')
+
+    // Horizontal scroll animation for skill cards
+    const initHorizontalScroll = async () => {
+      if (typeof window === 'undefined') return
+      const { gsap } = await import('gsap')
+      const { ScrollTrigger } = await import('gsap/dist/ScrollTrigger')
+      gsap.registerPlugin(ScrollTrigger)
+
+      const section = skillsSectionRef.current
+      const track = skillsTrackRef.current
+      if (!section || !track) return
+
+      // Skip horizontal scroll on mobile — cards are stacked vertically instead
+      if (window.innerWidth < 768) return
+
+      const totalScrollWidth = track.scrollWidth - window.innerWidth
+      const scrollDistance = totalScrollWidth * 0.33
+
+      // Set section height to accommodate the horizontal scroll distance
+      section.style.height = `${scrollDistance + window.innerHeight}px`
+
+      gsap.to(track, {
+        x: -totalScrollWidth,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: () => `+=${scrollDistance}`,
+          pin: '.sticky',
+          scrub: 1,
+        }
+      })
+    }
+
+    initHorizontalScroll()
   }, [])
 
   const handleRecaptchaChange = useCallback((executeFunction) => {
@@ -29,7 +82,7 @@ export default function Home() {
     e.preventDefault();
     
     if (!recaptchaExecute) {
-      setSubmitStatus({ type: 'error', message: 'reCAPTCHA not ready. Please wait a moment and try again.' });
+      setSubmitStatus({ type: 'error', message: tr.contact.recaptchaNotReady });
       return;
     }
 
@@ -41,7 +94,7 @@ export default function Home() {
       const recaptchaToken = await recaptchaExecute();
       
       if (!recaptchaToken) {
-        setSubmitStatus({ type: 'error', message: 'reCAPTCHA verification failed. Please try again.' });
+        setSubmitStatus({ type: 'error', message: tr.contact.recaptchaError });
         setIsSubmitting(false);
         return;
       }
@@ -67,20 +120,20 @@ export default function Home() {
         const result = await response.json();
 
         if (response.ok) {
-          setSubmitStatus({ type: 'success', message: 'Message sent successfully! I\'ll get back to you soon.' });
+          setSubmitStatus({ type: 'success', message: tr.contact.successMsg });
           e.target.reset();
         } else {
-          setSubmitStatus({ type: 'error', message: result.error || 'Failed to send message. Please try again.' });
+          setSubmitStatus({ type: 'error', message: result.error || tr.contact.errorMsg });
         }
       } catch (error) {
         console.error('Contact form error:', error);
-        setSubmitStatus({ type: 'error', message: 'An error occurred. Please try again.' });
+        setSubmitStatus({ type: 'error', message: tr.contact.genericError });
       } finally {
         setIsSubmitting(false);
       }
     } catch (error) {
       console.error('reCAPTCHA execution error:', error);
-      setSubmitStatus({ type: 'error', message: 'reCAPTCHA verification failed. Please try again.' });
+      setSubmitStatus({ type: 'error', message: tr.contact.recaptchaError });
       setIsSubmitting(false);
     }
   };
@@ -89,24 +142,28 @@ export default function Home() {
     {
       title: 'IntechMotion - Industrial Automation',
       img: '/images/intechmotion-logo.png',
+      hoverImg: '/images/client-work/intech-1.webp',
       tags: ['SEO', 'UI/UX', 'Web architecture'],
       link: 'https://intechmotion.com/'
     },
     {
       title: 'Ripipsa - Industrial Automation',
       img: '/images/ripipsa-logo.png',
+      hoverImg: '/images/client-work/ripipsa-1.webp',
       tags: ['SEO', 'UI/UX', 'Web architecture','Dynamic content (User credentials based) ', 'CI/CD'],
       link: 'https://ripipsa.com/'
     },
     {
       title: 'Consulting Company Website',
       img: '/images/merodio-consultores-logo.webp',
+      hoverImg: '/images/client-work/merodio-1.webp',
       tags: ['SEO', 'Blog content strategy', 'Custom solutions'],
       link: 'https://merodio.com.mx/'
     },
     {
       title: 'Local Autoshop',
       img: '/images/bosch-service-logo.webp',
+      hoverImg: '/images/client-work/carservicebosch-1.webp',
       tags: ['Local SEO', 'Brand consistency'],
       link: 'https://carservicebosch.com/'
     }
@@ -137,16 +194,14 @@ export default function Home() {
       {/* Hero */}
       <section className="relative py-80 md:py-80 section">
         <ThreeHero />
-        <div className="max-w-full mx-auto text-center reveal">
-          <h1 className="text-3xl md:text-8xl font-bold leading-tight mb-6">
-            Making Unforgettable Web Experiences
+        <div className="max-w-full mx-auto text-center space-y-8 reveal">
+          <h1 className="text-3xl md:text-8xl font-bold md:leading-tight mb-6w ">
+            {tr.hero.heading1} <span className="text-outline-mobile md:text-outline">{tr.hero.headingHighlight}</span> {tr.hero.heading2}
           </h1>
-          <p className="text-muted mb-8">
-            Hi there, I&apos;m <strong>Axel</strong>. Web Developer & SEO Specialist focused on dynamic web experiences that drive results.
-          </p>
+          <p className="text-muted mb-8" dangerouslySetInnerHTML={{ __html: tr.hero.sub }} />
           <div className="flex gap-3 justify-center">
-            <a href="#work" className="button-primary">See my work</a>
-            <a href="#contact" className="inline-flex items-center gap-2 px-5 py-3 rounded-lg border border-white/10 hover:border-white/20 transition">Contact me</a>
+            <a href="#work" className="button-primary">{tr.hero.btnWork}</a>
+            <a href="#contact" className="button-secondary">{tr.hero.btnContact}</a>
           </div>
         </div>
       </section>
@@ -154,9 +209,9 @@ export default function Home() {
       {/* Work */}
       <section id="work" className="section py-52">
         <SectionHeading
-          kicker="Selected Work"
-          title="Projects that ship value"
-          subtitle="A snapshot of recent client work. Optimized for conversions, built for scale."
+          kicker={tr.work.kicker}
+          title={tr.work.title}
+          subtitle={tr.work.subtitle}
         />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {projects.map((p, i) => (
@@ -168,60 +223,117 @@ export default function Home() {
       {/* 3D Section */}
       <section className="section py-10 md:py-20">
         <SectionHeading
-          kicker="Playground"
-          title="Interactive 3D"
-          subtitle="Lightweight Three.js model, scene coming soon..."
+          kicker={tr.three.kicker}
+          title={tr.three.title}
+          subtitle={tr.three.subtitle}
         />
-        <ThreeScene modelUrl="/3d/placeholder.glb" />
+        <ThreeShowcase />
       </section>
 
       {/* About */}
-      <section id="about" className="section py-40">
-        <SectionHeading
-          kicker="About"
-          title="What I bring"
-          subtitle="Full-stack foundations, strong SEO, and an eye for motion design."
-        />
-        <div className="grid md:grid-cols-3 gap-6">
-          {[
-            { t: 'Performance & SEO', d: 'Core Web Vitals, technical SEO, and clean architectures for lasting results.' },
-            { t: 'Modern Frontend', d: 'Next.js, React, Tailwind, GSAP & Three.js for polished UX.' },
-            { t: 'Scalable Backends', d: 'Prepared for Node/Express microservices and future tools (e.g., image optimizer).' }
-          ].map((b) => (
-            <div key={b.t} className="card p-6 reveal">
-              <h3 className="font-semibold mb-2">{b.t}</h3>
-              <p className="text-muted">{b.d}</p>
+      <section id="about" className="py-40">
+        <div className="section mb-16">
+          <SectionHeading
+            kicker={tr.about.kicker}
+            title={tr.about.title}
+            subtitle={tr.about.subtitle}
+          />
+        </div>
+
+        {/* Horizontal scroll skill cards */}
+        <div ref={skillsSectionRef} className="relative">
+          <div className="md:sticky top-0 md:h-screen flex md:items-center md:overflow-hidden">
+            <div ref={skillsTrackRef} className="flex flex-col md:flex-row">
+              {[
+                {
+                  icon: (
+                    <svg className="w-12 h-12 mx-auto mb-5" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="16 18 22 12 16 6" />
+                      <polyline points="8 6 2 12 8 18" />
+                    </svg>
+                  ),
+                  video: '/videos/frontend-loop.mp4',
+                  videoWebm: '/videos/front-bg-video.webm',
+                  poster: '/images/client-work/merodio-1.webp'
+                },
+                {
+                  icon: (
+                    <svg className="w-12 h-12 mx-auto mb-5" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="2" y="2" width="20" height="8" rx="2" />
+                      <rect x="2" y="14" width="20" height="8" rx="2" />
+                      <line x1="6" y1="6" x2="6.01" y2="6" />
+                      <line x1="6" y1="18" x2="6.01" y2="18" />
+                    </svg>
+                  ),
+                  video: '/videos/backend-loop.mp4',
+                  videoWebm: '/videos/back-bg-video.webm',
+                  poster: '/images/client-work/ripipsa-1.webp'
+                },
+                {
+                  icon: (
+                    <svg className="w-12 h-12 mx-auto mb-5" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="11" cy="11" r="8" />
+                      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                      <polyline points="8 13 11 10 13 12 16 8" />
+                    </svg>
+                  ),
+                  video: '/videos/seo-bg-video.mp4',
+                  videoWebm: '/videos/seo-bg-video.webm',
+                  poster: '/images/seo-video-poster.webp'
+                }
+              ].map((b, i) => {
+                const card = tr.about.cards[i]
+                return (
+                <div key={card.t} className="relative w-screen h-[75vh] md:h-screen md:flex-shrink-0 flex items-center justify-center">
+                  {/* Video background */}
+                  <video
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    poster={b.poster}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  >
+                    {b.videoWebm && <source src={b.videoWebm} type="video/webm" />}
+                    <source src={b.video} type="video/mp4" />
+                  </video>
+                  {/* Dark overlay */}
+                  <div className="absolute inset-0 bg-black/80" />
+                  {/* Content */}
+                  <div className="relative z-10 text-center max-w-xl px-6">
+                    {b.icon}
+                    <h3 className="text-3xl md:text-4xl font-bold mb-3">{card.t}</h3>
+                    <p className="text-base md:text-lg text-white/80">{card.d}</p>
+                  </div>
+                </div>
+              )})}
+
             </div>
-          ))}
+          </div>
         </div>
         {/* Extra info about me */}
-        <div className="flex flex-col md:flex-row items-center gap-8 pt-28">
-          <div className="flex-1 space-y-4 max-w-md">
-            <h3 className="text-2xl font-semibold">More About Me</h3>
-            <p className="text-muted">
-              I'm a <strong>Web developer</strong> with a passion for technology and innovation. 
-              My background combines technical expertise with creative problem-solving, resulting in awesome projects that create value I'm also a big time gamer, gym rat and chilaquiles lover.
-            </p>
-            <div className="space-y-2 pt-10">
-              <p className="text-muted">
-                <strong>Education:</strong> Multimedia Engineering Bachelor's Degree
-              </p>
-              <p className="text-muted">
-                <strong>Focus:</strong> Web Development & SEO Optimization
-              </p>
-              <p className="text-muted">
-                <strong>General skillset:</strong> Fulltsack web development, SEO, Web design, 3D design, Videogame development, Video production, Marketing, and more.
-              </p>
+        <div className="flex p flex-col columns-2 justify-center md:flex-row items-center gap-8 pt-28 section">
+          <div className="flex-1 flex flex-col justify-center text-left">
+            <h3 className="text-2xl font-semibold pb-6">{tr.about.moreTitle}</h3>
+            <p className="text-muted" dangerouslySetInnerHTML={{ __html: tr.about.morePara }} />
+            <div className="space-y-2 pt-6">
+              <p className="text-muted"><strong>{tr.about.educationLabel}:</strong> {tr.about.education}</p>
+              <p className="text-muted"><strong>{tr.about.focusLabel}:</strong> {tr.about.focus}</p>
+              <p className="text-muted"><strong>{tr.about.skillsetLabel}:</strong> {tr.about.skillset}</p>
             </div>
           </div>
           <div className="flex-1 flex justify-center">
-            <Image 
-              src="/images/axel-picture.jpg" 
-              alt="Axel Ramirez" 
-              width={400} 
-              height={400} 
-              className="rounded-full"
-            />
+            <div className="relative rounded-2xl overflow-hidden w-80 h-80 md:w-96 md:h-96">
+              {galleryImages.map(({ src, alt }, i) => (
+                <div
+                  key={src}
+                  className="gallery-slide"
+                  style={{ opacity: i === activeIdx ? 1 : 0 }}
+                >
+                  <Image key={activeIdx === i ? src : undefined} src={src} alt={alt} fill sizes="(max-width: 768px) 320px, 384px" unoptimized />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -229,9 +341,9 @@ export default function Home() {
       {/* Contact */}
       <section id="contact" className="section py-20">
         <SectionHeading
-          kicker="Contact"
-          title="Let’s build something great"
-          subtitle="Tell me what you have in mind."
+          kicker={tr.contact.kicker}
+          title={tr.contact.title}
+          subtitle={tr.contact.subtitle}
         />
         <GoogleReCaptchaProvider
           reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
@@ -243,11 +355,11 @@ export default function Home() {
         >
           {/* Debug: Check if environment variable is loaded */}
           {console.log('reCAPTCHA Site Key:', process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY)}
-          <form className="card p-6 grid md:grid-cols-2 gap-4 max-w-3xl reveal" onSubmit={handleSubmit}>
-            <input className="bg-black/30 border border-white/10 rounded px-4 py-3 outline-none focus:border-accent" name="name" placeholder="Your name" required />
-            <input className="bg-black/30 border border-white/10 rounded px-4 py-3 outline-none focus:border-accent" type="email" name="email" placeholder="Email address" required />
-            <input className="bg-black/30 border border-white/10 rounded px-4 py-3 outline-none focus:border-accent md:col-span-2" name="subject" placeholder="Subject" />
-            <textarea className="bg-black/30 border border-white/10 rounded px-4 py-3 outline-none focus:border-accent md:col-span-2" name="message" placeholder="Project details" rows="5" required />
+          <form className="card p-6 grid md:grid-cols-2 gap-4 max-w reveal" onSubmit={handleSubmit}>
+            <input className="bg-black/30 border border-white/10 rounded px-4 py-3 outline-none focus:border-accent" name="name" placeholder={tr.contact.name} required />
+            <input className="bg-black/30 border border-white/10 rounded px-4 py-3 outline-none focus:border-accent" type="email" name="email" placeholder={tr.contact.email} required />
+            <input className="bg-black/30 border border-white/10 rounded px-4 py-3 outline-none focus:border-accent md:col-span-2" name="subject" placeholder={tr.contact.subject} />
+            <textarea className="bg-black/30 border border-white/10 rounded px-4 py-3 outline-none focus:border-accent md:col-span-2" name="message" placeholder={tr.contact.message} rows="5" required />
             
             {/* reCAPTCHA v3 - runs invisibly in background */}
             <div className="md:col-span-2">
@@ -257,8 +369,8 @@ export default function Home() {
             {/* Status Messages */}
             {submitStatus && (
               <div className={`md:col-span-2 p-3 rounded-lg ${
-                submitStatus.type === 'success' 
-                  ? 'bg-green-500/20 border border-green-500/30 text-green-300' 
+                submitStatus.type === 'success'
+                  ? 'bg-green-500/20 border border-green-500/30 text-green-300'
                   : 'bg-red-500/20 border border-red-500/30 text-red-300'
               }`}>
                 {submitStatus.message}
@@ -270,7 +382,13 @@ export default function Home() {
               type="submit" 
               disabled={isSubmitting || !recaptchaExecute}
             >
-              {isSubmitting ? 'Sending...' : 'Send message'}
+              {isSubmitting ? tr.contact.sending : tr.contact.send}
+              {!isSubmitting && (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+                  <line x1="22" y1="2" x2="11" y2="13" />
+                  <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                </svg>
+              )}
             </button>
           </form>
         </GoogleReCaptchaProvider>

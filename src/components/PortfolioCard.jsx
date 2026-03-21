@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-export default function PortfolioCard({ title, img, tags = [], link = '#', delay = 0 }) {
+export default function PortfolioCard({ title, img, hoverImg, tags = [], link = '#', delay = 0 }) {
   return (
     <a href={link} target="_blank" rel="noreferrer"
        className="card group overflow-hidden hover:-translate-y-1 hover:shadow-xl transition transform-gpu portfolio-card"
@@ -8,8 +8,12 @@ export default function PortfolioCard({ title, img, tags = [], link = '#', delay
       <div className="relative h-56 w-full overflow-hidden">
         {/* White gradient background */}
         <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50 to-gray-100"></div>
-        {/* Image with reduced opacity to show background */}
-        <Image src={img} alt={title} fill className="object-contain transition scale-105 group-hover:scale-110 p-4"/>
+        {/* Default image */}
+        <Image src={img} alt={title} fill className="object-contain transition-opacity duration-500 ease-in-out opacity-30 group-hover:opacity-0 p-4"/>
+        {/* Hover image */}
+        {hoverImg && (
+          <Image src={hoverImg} alt={`${title} preview`} fill className="object-cover transition-opacity duration-500 ease-in-out opacity-0 group-hover:opacity-100"/>
+        )}
       </div>
       <div className="p-5">
         <h3 className="text-lg font-semibold mb-2">{title}</h3>
