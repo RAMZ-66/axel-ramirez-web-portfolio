@@ -355,7 +355,7 @@ export default function Home() {
         >
           {/* Debug: Check if environment variable is loaded */}
           {console.log('reCAPTCHA Site Key:', process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY)}
-          <form className="card p-6 grid md:grid-cols-2 gap-4 max-w reveal" onSubmit={handleSubmit}>
+          <form className="rounded-xl border border-white/20 hover:border-accent transition p-6 grid md:grid-cols-2 gap-4 max-w reveal" onSubmit={handleSubmit}>
             <input className="bg-black/30 border border-white/10 rounded px-4 py-3 outline-none focus:border-accent" name="name" placeholder={tr.contact.name} required />
             <input className="bg-black/30 border border-white/10 rounded px-4 py-3 outline-none focus:border-accent" type="email" name="email" placeholder={tr.contact.email} required />
             <input className="bg-black/30 border border-white/10 rounded px-4 py-3 outline-none focus:border-accent md:col-span-2" name="subject" placeholder={tr.contact.subject} />

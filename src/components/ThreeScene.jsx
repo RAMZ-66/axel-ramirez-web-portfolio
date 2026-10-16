@@ -2,13 +2,14 @@ import { Suspense, useMemo } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, useGLTF, Environment } from '@react-three/drei'
 import * as THREE from 'three'
+import { accent } from '@/styles/theme'
 
 // Fallback shape shown while loading
 function FallbackModel() {
   return (
     <mesh>
       <icosahedronGeometry args={[1, 1]} />
-      <meshStandardMaterial color={'#60a5fa'} />
+      <meshStandardMaterial color={accent} />
     </mesh>
   )
 }
@@ -25,7 +26,7 @@ function GradientBackground() {
     return new THREE.ShaderMaterial({
       side: THREE.BackSide,
       uniforms: {
-        colorTop: { value: new THREE.Color('#60a5fa') },     // /blue
+        colorTop: { value: new THREE.Color(accent) },     // /blue
         colorMiddle: { value: new THREE.Color('#302b63') },  // Purple
         colorBottom: { value: new THREE.Color('#24243e') }   // Dark blue
       },
@@ -70,7 +71,7 @@ export default function ThreeScene({ modelUrl = '' }) {
         <GradientBackground />
         <ambientLight intensity={0.6} />
         <pointLight intensity={10} position={[5, 0, 10]} />
-        <pointLight intensity={5} position={[-5, 5, -5]} color="#60a5fa" />
+        <pointLight intensity={5} position={[-5, 5, -5]} color={accent} />
         <Suspense fallback={<FallbackModel />}>
           {modelUrl && <Model url={modelUrl} />}
         </Suspense>

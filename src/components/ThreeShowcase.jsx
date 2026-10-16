@@ -2,6 +2,7 @@ import { useRef, useMemo } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, Environment } from '@react-three/drei'
 import * as THREE from 'three'
+import { accent } from '@/styles/theme'
 import { useLang } from '@/context/LanguageContext'
 
 /* ── Scene A: Pen — product / e-commerce viewer ── */
@@ -37,7 +38,7 @@ function Pen() {
       {/* Cap */}
       <mesh position={[0, 1.175, 0]}>
         <cylinderGeometry args={[0.09, 0.09, 0.35, 32]} />
-        <meshStandardMaterial color="#60a5fa" metalness={0.7} roughness={0.15} />
+        <meshStandardMaterial color={accent} metalness={0.7} roughness={0.15} />
       </mesh>
       {/* Clip */}
       <mesh position={[0.105, 1.05, 0]}>
@@ -52,7 +53,7 @@ function PenScene() {
   return (
     <Canvas camera={{ position: [0, 0.1, 4.5], fov: 40 }} dpr={[1, 1.5]} gl={{ alpha: true }}>
       <ambientLight intensity={0.5} />
-      <pointLight position={[4, 4, 4]} intensity={3} color="#60a5fa" />
+      <pointLight position={[4, 4, 4]} intensity={3} color={accent} />
       <pointLight position={[-4, -2, 3]} intensity={2} color="#c084fc" />
       <Pen />
       <Environment preset="studio" />
@@ -103,7 +104,7 @@ function ParticleWave() {
       </bufferGeometry>
       <pointsMaterial
         size={0.04}
-        color="#60a5fa"
+        color={accent}
         sizeAttenuation
         transparent
         opacity={0.85}
@@ -167,7 +168,7 @@ function BlobScene() {
     <Canvas camera={{ position: [0, 0, 3.5], fov: 45 }} dpr={[1, 1.5]} gl={{ alpha: true }}>
       <ambientLight intensity={0.5} />
       <pointLight position={[3, 3, 3]} intensity={4} color="#a78bfa" />
-      <pointLight position={[-3, -2, 2]} intensity={2.5} color="#60a5fa" />
+      <pointLight position={[-3, -2, 2]} intensity={2.5} color={accent} />
       <MorphBlob />
     </Canvas>
   )
@@ -186,7 +187,7 @@ export default function ThreeShowcase() {
         return (
         <div
           key={title}
-          className="card overflow-hidden flex flex-col hover:ring-1 hover:ring-accent/30 transition-shadow p-3"
+          className="rounded-xl border border-white/20 hover:border-accent overflow-hidden flex flex-col hover:-translate-y-1 transition transform-gpu p-3"
         >
           <div className="relative h-64 md:h-72 rounded-xl overflow-hidden bg-surface">
             <Scene />

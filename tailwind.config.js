@@ -1,3 +1,5 @@
+const { accent } = require("./src/styles/theme");
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: 'class',
@@ -10,7 +12,7 @@ module.exports = {
       colors: {
         bg: "#0b0e14",
         surface: "#131a23",
-        accent: "#60a5fa",
+        accent,
         muted: "#94a3b8"
       },
       boxShadow: {

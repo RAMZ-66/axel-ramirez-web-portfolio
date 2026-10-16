@@ -3,7 +3,7 @@ import Image from 'next/image'
 export default function PortfolioCard({ title, img, hoverImg, tags = [], link = '#', delay = 0 }) {
   return (
     <a href={link} target="_blank" rel="noreferrer"
-       className="card group overflow-hidden hover:-translate-y-1 hover:shadow-xl transition transform-gpu portfolio-card"
+       className="group rounded-xl border border-white/20 hover:border-accent overflow-hidden hover:-translate-y-1 transition transform-gpu portfolio-card"
        style={{ animationDelay: `${delay}ms` }}>
       <div className="relative h-56 w-full overflow-hidden">
         {/* White gradient background */}

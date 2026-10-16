@@ -81,7 +81,7 @@ The contact form on the homepage follows this architecture:
 - Custom color scheme:
   - `bg: #0b0e14` - Dark background
   - `surface: #131a23` - Card backgrounds
-  - `accent: #60a5fa` - Blue accent
+  - `accent: #8b9cff` - Periwinkle accent (defined in `src/styles/theme.js`)
   - `muted: #94a3b8` - Gray text
 - Utility classes: `.section`, `.card`, `.button-primary`, `.link`, `.reveal`
 
