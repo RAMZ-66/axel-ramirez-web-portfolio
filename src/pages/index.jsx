@@ -140,31 +140,31 @@ export default function Home() {
 
   const projects = [
     {
-      title: 'IntechMotion - Industrial Automation',
-      img: '/images/intechmotion-logo.png',
-      hoverImg: '/images/client-work/intech-1.webp',
-      tags: ['SEO', 'UI/UX', 'Web architecture'],
-      link: 'https://intechmotion.com/'
+      title: 'DMI - Industrial Automation',
+      img: '/images/client-work/dmi-logo.avif',
+      hoverImg: '/images/client-work/dmi-website.avif',
+      tags: ['JavaScript', 'CSS animations', 'WordPress', 'Multilingual (WPML)', 'Technical SEO'],
+      link: 'https://dmiindustriessuppliesinc.com/'
     },
     {
       title: 'Ripipsa - Industrial Automation',
       img: '/images/ripipsa-logo.png',
       hoverImg: '/images/client-work/ripipsa-1.webp',
-      tags: ['SEO', 'UI/UX', 'Web architecture','Dynamic content (User credentials based) ', 'CI/CD'],
+      tags: ['PHP', 'JavaScript', 'WordPress', 'Role-based access', 'CI/CD'],
       link: 'https://ripipsa.com/'
     },
     {
       title: 'Consulting Company Website',
       img: '/images/merodio-consultores-logo.webp',
       hoverImg: '/images/client-work/merodio-1.webp',
-      tags: ['SEO', 'Blog content strategy', 'Custom solutions'],
+      tags: ['WordPress', 'Elementor', 'Content SEO', 'Blog strategy'],
       link: 'https://merodio.com.mx/'
     },
     {
       title: 'Local Autoshop',
       img: '/images/bosch-service-logo.webp',
       hoverImg: '/images/client-work/carservicebosch-1.webp',
-      tags: ['Local SEO', 'Brand consistency'],
+      tags: ['WordPress', 'Elementor', 'Local SEO'],
       link: 'https://carservicebosch.com/'
     }
   ]

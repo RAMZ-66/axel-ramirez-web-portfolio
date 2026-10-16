@@ -15,7 +15,6 @@
     "critters": "^0.0.25",
     "gsap": "^3.10.4",
     "next": "^16.0.8",
-    "next-intl": "^4.7.0",
     "postcss": "^8.4.41",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
@@ -26,9 +25,6 @@
     "three": "^0.179.1"
   },
   "devDependencies": {
-    "@babel/cli": "^7.28.3",
-    "@babel/preset-env": "^7.28.3",
-    "@babel/preset-react": "^7.27.1",
     "eslint": "^9.39.2",
     "eslint-config-next": "^16.0.8"
   }
