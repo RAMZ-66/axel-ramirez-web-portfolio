@@ -16,6 +16,7 @@ const t = {
     },
     work: {
       kicker: 'Selected Work',
+      launched: 'Launched',
       title: 'Projects that ship value',
       subtitle: 'A snapshot of recent client work. Optimized for conversions, built for scale.',
     },
@@ -82,6 +83,7 @@ const t = {
     },
     work: {
       kicker: 'Proyectos Destacados',
+      launched: 'Lanzado en',
       title: 'Proyectos que generan valor',
       subtitle: 'Una muestra de proyectos recientes. Optimizados para conversiones, construidos para escalar.',
     },

@@ -142,9 +142,11 @@ export default function Home() {
     {
       title: 'DMI - Industrial Automation',
       img: '/images/client-work/dmi-logo.avif',
-      hoverImg: '/images/client-work/dmi-website.avif',
+      hoverImg: '/images/client-work/dmi-website-ss.avif',
       tags: ['JavaScript', 'CSS animations', 'WordPress', 'Multilingual (WPML)', 'Technical SEO'],
-      link: 'https://dmiindustriessuppliesinc.com/'
+      link: 'https://dmiindustriessuppliesinc.com/',
+      featured: true,
+      launched: '2026-10'
     },
     {
       title: 'Ripipsa - Industrial Automation',
@@ -154,14 +156,14 @@ export default function Home() {
       link: 'https://ripipsa.com/'
     },
     {
-      title: 'Consulting Company Website',
+      title: 'Merodio - Consulting Company',
       img: '/images/merodio-consultores-logo.webp',
       hoverImg: '/images/client-work/merodio-1.webp',
       tags: ['WordPress', 'Elementor', 'Content SEO', 'Blog strategy'],
       link: 'https://merodio.com.mx/'
     },
     {
-      title: 'Local Autoshop',
+      title: 'Bosch Car Service - Autoshop',
       img: '/images/bosch-service-logo.webp',
       hoverImg: '/images/client-work/carservicebosch-1.webp',
       tags: ['WordPress', 'Elementor', 'Local SEO'],
